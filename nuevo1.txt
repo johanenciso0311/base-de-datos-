@@ -1,0 +1,269 @@
+# 1 - escribe un prosedimiento que no tenga ningun parametro de entrar ni de salida  y que muestre el texto !hola mundo ¡
+
+USE jardineria;
+
+DELIMITER  $$;
+DROP PROCEDURE IF EXISTS Hola_mundo;
+CREATE PROCEDURE hola_mundo
+BEGIN
+   SELECT 'HOLA MUNDO';
+end $$;
+
+DELIMITER ;
+CALL Hola_mundo();
+
+# 2 Escribe un procedimiento que reciba un numero real de entrada y muestre un mensaje indicando si el numero es positivo, negativo o otro;
+
+DELIMITER $$;
+DROP PROCEDURE IF EXISTS indicador_numero;
+CREATE PROCEDURE indicador_numero(IN numero DOUBLE)
+BEGIN
+    IF numero > 0 THEN SELECT 'Positivo';
+    ELSEIF numero < 0 THEN SELECT  'NEGATIVO';
+    ELSE SELECT 'CERO';
+    END IF;
+
+end $$;
+DELIMITER ;
+CALL indicador_numero();
+
+
+
+
+
+# 3 Modifique el precedimiento diseñado en el ejercicio anterior para que tengo una parametro de entrada, con el valor un numero real, y un parametro
+# de salida, con una cadena de caracteres  si el numero es positivo, negativo o otro
+
+DELIMITER $$;
+DROP PROCEDURE IF EXISTS indicador_numero1;
+CREATE PROCEDURE indicador_numero1(IN numero DOUBLE, OUT caracter VARCHAR(10))
+BEGIN
+    IF numero > 0 THEN SET caracter = 'Positivo';
+    ELSEIF numero < 0 THEN SET caracter = 'NEGATIVO';
+    ELSE SET caracter = 'CERO';
+    END IF;
+
+end $$;
+
+DELIMITER ;
+CALL indicador_numero1(10,@caracter);
+SELECT @caracter;
+CALL indicador_numero1(-10,@caracter);
+SELECT @caracter;
+CALL indicador_numero1(0,@caracter);
+SELECT @caracter;
+
+
+    # 4 scribe un procedimiento que reciba un número real de entrada, que representa el valor de la nota de un alumno, y muestre un mensaje indicando
+    # qué nota ha obtenido teniendo en cuenta las siguientes condiciones:
+    # [0,5) = Insuficiente
+    # [5,6) = Aprobado
+    # [6, 7) = Bien
+    # [7, 9) = Notable
+    # [9, 10] = Sobresaliente
+    # En cualquier otro caso la nota no será válida.
+  DELIMITER $$;
+  DROP PROCEDURE IF EXISTS comprobardor_nota;
+  CREATE PROCEDURE comprobardor_nota(IN nota DOUBLE)
+  BEGIN
+      IF nota >= 0 AND nota < 5 THEN SELECT 'INSUFICIENTE';
+      ELSEIF nota >= 5 AND nota <=6 THEN SELECT 'APROBADO';
+      ELSEIF nota >= 6 AND nota < 7 THEN SELECT  'BIEN';
+      ELSEIF nota >=7 AND  nota < 9 THEN SELECT  'NOTABLE';
+      ELSEIF nota >= 9 AND nota < 10 THEN SELECT  'SOBRESALIENTE';
+      ELSE SELECT 'SISA GAY';
+      END IF;
+  end $$;
+
+  DELIMITER ;
+  CALL comprobardor_nota(5);
+
+# 5 Modifique el procedimiento diseñado en el ejercicio anterior para que tenga un parámetro de entrada, con el valor de la nota en formato numérico
+# y un parámetro de salida, con una cadena de texto indicando la nota correspondiente.
+
+
+DELIMITER  $$;
+DROP PROCEDURE IF EXISTS ejercicio_5;
+CREATE PROCEDURE ejercicio_5(IN nota DOUBLE,OUT resultado VARCHAR(100))
+BEGIN
+      IF nota >= 0 AND nota < 5 THEN SET resultado = 'INSUFICIENTE';
+      ELSEIF nota >= 5 AND nota <=6 THEN SET resultado ='APROBADO';
+      ELSEIF nota >= 6 AND nota < 7 THEN SET resultado = 'BIEN';
+      ELSEIF nota >=7 AND  nota < 9 THEN SET resultado = 'NOTABLE';
+      ELSEIF nota >= 9 AND nota < 10 THEN SET resultado ='SOBRESALIENTE';
+      ELSE SET resultado = 'SISA GAY';
+      END IF;
+end $$;
+
+DELIMITER ;
+CALL ejercicio_5(3,@RED);
+SELECT @RED;
+
+# Resuelva el procedimiento diseñado en el ejercicio anterior haciendo uso de la estructura de control CASE.
+
+DELIMITER $$;
+DROP PROCEDURE IF EXISTS ejercicio_6;
+CREATE PROCEDURE ejercicio_6(IN nota DOUBLE, OUT resultado VARCHAR(100))
+BEGIN
+    CASE
+        WHEN nota >= 0 AND nota <= 5 THEN SET resultado = 'INSUFICIENTE';
+        WHEN nota >= 5 AND nota <= 6 THEN SET  resultado = 'APROBADO';
+        WHEN nota >= 6 AND  nota <= 7 THEN SET resultado = 'BIEN';
+        WHEN nota >= 7 AND  nota <= 9 THEN SET  resultado = 'NOTABLE';
+        WHEN nota >= 9 AND  nota <= 10 THEN SET resultado = 'SOBRESALIENTE';
+        ELSE SET resultado = 'FUERA DEL RANGO';
+        END CASE;
+end $$;
+
+DELIMITER  ;
+CALL ejercicio_6(10,@pepe);
+
+SELECT @pepe;
+
+# Escribe un procedimiento que reciba como parámetro de entrada un valor numérico que represente un día de la semana y que devuelva una cadena de
+# caracteres con el nombre del día de la semana correspondiente. Por ejemplo, para el valor de entrada 1 debería devolver la cadena lunes. Resuelva
+# el procedimiento haciendo uso de la estructura de control IF.
+
+DELIMITER $$;
+DROP PROCEDURE IF EXISTS ejercicio_7;
+CREATE PROCEDURE ejercicio_7(IN numero INT, OUT dia VARCHAR(50))
+BEGIN
+    CASE
+        WHEN numero = 1 THEN SET dia = 'Lunes';
+        WHEN numero = 2 THEN SET dia = 'Martes';
+        WHEN numero = 3 THEN SET dia = 'Miercoles';
+        WHEN numero = 4 THEN SET dia = 'Jueves';
+        WHEN numero = 5 THEN SET dia = 'Viernes';
+        WHEN numero = 5 THEN SET dia = 'Sabado';
+        WHEN numero = 6 THEN SET dia = 'Domingo';
+        ELSE SET dia = 'SOLO NUMEROS DEL 1 A 6';
+    END CASE;
+end $$;
+
+DELIMITER $$;
+
+
+CALL ejercicio_7(4,@dia);
+SELECT @dia;
+
+# Escribe un procedimiento que reciba el nombre de un país como parámetro de entrada y realice una consulta sobre la tabla cliente
+# para obtener todos los clientes que existen en la tabla de ese país.
+
+DELIMITER $$;
+DROP PROCEDURE IF EXISTS ejercicio_8;
+CREATE PROCEDURE ejercicio1_8(IN pais VARCHAR(100))
+BEGIN
+    SELECT *
+    FROM cliente
+    WHERE pais = cliente.pais;
+end $$;
+
+DELIMITER ;
+CALL ejercicio1_8('France');
+
+# Escribe un procedimiento que reciba como parámetro de entrada una forma de pago, que será una cadena de caracteres (Ejemplo: PayPal, Transferencia, etc).
+# Y devuelva como salida el pago de máximo valor realizado para esa forma de pago. Deberá hacer uso de la tabla pago de la base de datos jardineria.
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS ejercicio_9;
+CREATE PROCEDURE ejercicio_9(IN formaDePago VARCHAR(100))
+BEGIN
+    SELECT MAX(total)
+     FROM pago
+    WHERE forma_pago = formaDePago;
+
+end $$;
+
+
+DELIMITER ;
+
+CALL ejercicio_9('cheque');
+
+#Escribe un procedimiento que reciba como parámetro de entrada una forma de pago, que será una cadena de caracteres (Ejemplo: PayPal, Transferencia, etc).
+# Y devuelva como salida los siguientes valores teniendo en cuenta la forma de pago seleccionada como parámetro de entrada:
+
+# el pago de máximo valor,
+# el pago de mínimo valor,
+# el valor medio de los pagos realizados,
+# la suma de todos los pagos,
+# el número de pagos realizados para esa forma de pago.
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS ejercicio_10;
+CREATE PROCEDURE ejercicio_10(IN formaDePago VARCHAR(100),
+                                   OUT max_pago DECIMAL(10, 2),
+                                   OUT min_pago DECIMAL(10, 2),
+                                   OUT valor_medio DECIMAL(10, 2),
+                                   OUT suma_total DECIMAL(10, 2),
+                                   OUT num_pagos INT)
+BEGIN
+    SELECT MAX(total) INTO max_pago
+    FROM pago
+    WHERE forma_pago = formaDePago;
+
+    SELECT MIN(total) INTO min_pago
+    FROM pago
+    WHERE forma_pago = formaDePago;
+
+    SELECT AVG(total) INTO valor_medio
+    FROM pago
+    WHERE forma_pago = formaDePago;
+
+    SELECT SUM(total) INTO suma_total
+    FROM pago
+    WHERE forma_pago = formaDePago;
+
+
+     SELECT COUNT(*) INTO num_pagos
+    FROM pago
+    WHERE forma_pago = forma_pago;
+
+
+end $$;
+
+DELIMITER ;
+CALL ejercicio_10('Paypal',@max_pago,@min_pago,@valor_medio,@suma_total,@num_pagos);
+
+SELECT 'Pago de máximo valor:', ROUND(@max_pago);
+SELECT 'Pago de mínimo valor:', ROUND(@min_pago);
+SELECT 'Valor medio de los pagos:', ROUND(@valor_medio);
+SELECT 'Suma total de los pagos:', ROUND(@suma_total);
+SELECT 'Número de pagos realizados:', ROUND(@num_pagos);
+
+
+# Crea una base de datos llamada procedimientos que contenga una tabla llamada cuadrados. La tabla cuadrados debe tener dos columnas de tipo INT UNSIGNED,
+# una columna llamada número y otra columna llamada cuadrado.
+# Una vez creada la base de datos y la tabla deberá crear un procedimiento llamado calcular_cuadrados con las siguientes características.
+# El procedimiento recibe un parámetro de entrada llamado tope de tipo INT UNSIGNED y calculará el valor de los cuadrados de los primeros números
+# naturales hasta el valor introducido como parámetro. El valor del números y de sus cuadrados deberán ser almacenados en la tabla cuadrados que hemos
+# creado previamente.
+# Tenga en cuenta que el procedimiento deberá eliminar el contenido actual de la tabla antes de insertar los nuevos valores de los cuadrad
+
+DELIMITER $$;
+CREATE DATABASE IF NOT EXISTS procedimientos;
+USE procedimientos;
+CREATE TABLE IF NOT EXISTS cuadrados (
+  numero INT UNSIGNED,
+  cuadros INT UNSIGNED
+);
+
+DELIMITER $$;
+DROP PROCEDURE IF EXISTS calcular_cuadrados;
+CREATE PROCEDURE calcular_cuadrados(IN tope INT UNSIGNED)
+BEGIN
+    DECLARE i INT UNSIGNED DEFAULT 1;
+    DECLARE cuadrado_i INT ;
+    TRUNCATE TABLE cuadrados;
+
+    WHILE i <= tope DO
+
+        SET cuadrado_i = i * i;
+
+        INSERT INTO cuadrados (numero, cuadros) VALUES (i,cuadrado_i);
+
+    end while ;
+end $$;
+
+DELIMITER ;
+CALL calcular_cuadrados(10);
+
